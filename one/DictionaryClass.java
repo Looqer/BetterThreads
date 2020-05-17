@@ -8,6 +8,7 @@ import java.util.Set;
 public class DictionaryClass extends Thread {
 
     List<Word> myDictionary = new ArrayList<>();
+    int duplicaterate, onlyinonefile;
 
     @Override
     public void run() {
@@ -16,29 +17,39 @@ public class DictionaryClass extends Thread {
         while (true) {
 
 
-            int duplicaterate = 0, onlyinonefile = 0;
-            //for(Word everyword : myDictionary) System.out.println(everyword.sourceFile + " : " + everyword.wordvalue);
+            for(Word everyword : myDictionary) System.out.println(everyword.sourceFile + " : " + everyword.wordvalue);
 
             System.out.println("Slow w slowniku: " + myDictionary.size());
 
-            Set<String> hashset = new HashSet<String>();
-            hashset.clear();
+            Set<String> hashsetFiles = new HashSet<String>();
+            Set<String> hashsetUnique = new HashSet<String>();
+            Set<String> hashsetNUnique = new HashSet<String>();
+
+            duplicaterate = 0;
+            onlyinonefile = 0;
             for(Word wordex : myDictionary){
                 duplicaterate = 0;
-                onlyinonefile = 0;
-                hashset.add(wordex.sourceFile);
-
-                for(Word wordexa : myDictionary){
-                    if((wordex.sourceFile != wordexa.sourceFile) & (wordex.wordvalue == wordexa.wordvalue)){
-                        duplicaterate++;
+                hashsetFiles.add(wordex.sourceFile);
+                //System.out.println("ogarniamy slowo " + wordex.wordvalue + " z " + wordex.sourceFile);
+                for (Word wordexa : myDictionary){
+                    //System.out.println("ze slowem " + wordexa.wordvalue + " z " + wordexa.sourceFile);
+                    if(!wordex.sourceFile.equals(wordexa.sourceFile)){
+                        if(wordex.wordvalue.equals(wordexa.wordvalue)){
+                            duplicaterate++;
+                        }
                     }
                 }
-                if (duplicaterate == 0){
-                    onlyinonefile++;
+                if(duplicaterate == 0){
+                    hashsetUnique.add(wordex.wordvalue);
+                }
+                else{
+                    hashsetNUnique.add(wordex.wordvalue);
                 }
             }
-            System.out.println("Plikow w slowniku: " +hashset.size());
-            System.out.println("Slow co sa tylko w jednym pliku: " + onlyinonefile);
+            System.out.println("Plikow w slowniku: " + hashsetFiles.size());
+            hashsetFiles.clear();
+            System.out.println("Slow co sa tylko w jednym pliku: " + hashsetUnique.size());
+            System.out.println("Slow co sa w wiecej niz jednym pliku: " + hashsetNUnique.size());
 
             try {
                 Thread.sleep(5000);
