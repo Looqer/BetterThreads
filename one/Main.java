@@ -10,10 +10,13 @@ import java.util.concurrent.Executors;
 
 public class Main {
 
+    static String mypathname = "D:\\Projects\\workspace_java\\Threads\\textfiles";
+
     public static void main(String[] args) throws InterruptedException {
 
-        File folder = new File("D:\\Projects\\workspace_java\\Threads\\textfiles");
+        File folder = new File(mypathname);
         List<String> newFileList;
+
 
         DictionaryClass dictionary = new DictionaryClass();
         dictionary.start();
@@ -24,6 +27,7 @@ public class Main {
             System.out.println("szukanie");
             newFileList = newFiles(folder);
 
+            System.out.println(newFileList);
 
             ExecutorService filesExecutor = Executors.newFixedThreadPool(2);
 
@@ -32,6 +36,7 @@ public class Main {
                 filesExecutor.submit(() -> {
 
                     List<String> fileDictionary = fileReader(singleFile);
+
                     for (String fileword : fileDictionary){
                         Word convertedfileword = Wordgenerator(singleFile, fileword);
                         dictionary.myDictionary.add(convertedfileword);
@@ -54,6 +59,15 @@ public class Main {
             if (fileEntry.getName().endsWith(".txt")) {
                 newFileList.add(fileEntry.getName());
             }
+            else if (fileEntry.isDirectory()) {
+                String subfolder = mypathname + "\\" + fileEntry.getName();
+                File foldera = new File(subfolder);
+                for (File fileEntrya : foldera.listFiles()) {
+                    if (fileEntrya.getName().endsWith(".txt")) {
+                        newFileList.add(fileEntry.getName() + "\\" +fileEntrya.getName());
+                    }
+                }
+            }
         }
 
         return newFileList;
@@ -62,8 +76,7 @@ public class Main {
     private static List<String> fileReader(String fileEntry) {
         List<String> fileWordList = null;
 
-           String fullpath = ("D:\\Projects\\workspace_java\\Threads\\textfiles\\" + fileEntry);
-
+           String fullpath = (mypathname + "\\" + fileEntry);
 
             Scanner s = null;
             try {

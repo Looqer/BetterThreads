@@ -23,6 +23,13 @@ public class DictionaryClass extends Thread {
             Set<String> hashsetNUnique = new HashSet<String>();
             Word[] frequencyRank = new Word[5];
 
+            for(int i=0; i< 5; i++){
+                frequencyRank[i] = new Word();
+                frequencyRank[i].wordvalue = "t";
+                frequencyRank[i].sourceFile = "t";
+                frequencyRank[i].occurences = 0;
+            }
+
             duplicaterate = 0;
             onlyinonefile = 0;
             frequency = 0;
@@ -47,21 +54,30 @@ public class DictionaryClass extends Thread {
                 }
 
                 wordex.occurences = frequency;
-                if ((frequencyRank.equals(null))){
-                    frequencyRank[0] = wordex;
-                }
 
-                if ((wordex.occurences > frequencyRank[0].occurences)){
-                    frequencyRank[0] = wordex;
+                if(frequencyRank[0].wordvalue.equals(wordex.wordvalue) || frequencyRank[1].wordvalue.equals(wordex.wordvalue) || frequencyRank[2].wordvalue.equals(wordex.wordvalue) || frequencyRank[3].wordvalue.equals(wordex.wordvalue) || frequencyRank[4].wordvalue.equals(wordex.wordvalue)){
+                    System.out.println("takie same");
                 }
-                for(int i = 0; i < 4; i++){
-                    if (frequencyRank[i].occurences > frequencyRank[i+1].occurences){
-                        frequencyRank[i+1] = frequencyRank[i];
+                else {
+                    if ((wordex.occurences > frequencyRank[0].occurences)) {
+                        frequencyRank[0] = wordex;
+                    }
+                    for (int i = 0; i < 4; i++) {
+                        if (frequencyRank[i].occurences > frequencyRank[i + 1].occurences) {
+                            Word temp;
+                            temp = frequencyRank[i + 1];
+                            frequencyRank[i + 1] = frequencyRank[i];
+                            frequencyRank[i] = temp;
+                        }
                     }
                 }
             }
 
-            System.out.println("rankng " + Arrays.toString(frequencyRank));
+            System.out.println("rankng 5 " + frequencyRank[0].wordvalue + " " + frequencyRank[0].occurences);
+            System.out.println("rankng 4 " + frequencyRank[1].wordvalue + " " + frequencyRank[1].occurences);
+            System.out.println("rankng 3 " + frequencyRank[2].wordvalue + " " + frequencyRank[2].occurences);
+            System.out.println("rankng 2 " + frequencyRank[3].wordvalue + " " + frequencyRank[3].occurences);
+            System.out.println("rankng 1 " + frequencyRank[4].wordvalue + " " + frequencyRank[4].occurences);
 
             System.out.println("Plikow w slowniku: " + hashsetFiles.size());
             hashsetFiles.clear();
