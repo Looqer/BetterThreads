@@ -8,7 +8,7 @@ public class DictionaryClass extends Thread {
     int duplicaterate, onlyinonefile, frequency;
 
     @Override
-    public void run() {
+    synchronized public void run() {
 
 
         while (true) {
@@ -27,7 +27,7 @@ public class DictionaryClass extends Thread {
                 frequencyRank[i] = new Word();
                 frequencyRank[i].wordvalue = "t";
                 frequencyRank[i].sourceFile = "t";
-                frequencyRank[i].occurences = 0;
+                frequencyRank[i].globaloccurences = 0;
             }
 
             duplicaterate = 0;
@@ -53,17 +53,15 @@ public class DictionaryClass extends Thread {
                     hashsetNUnique.add(wordex.wordvalue);
                 }
 
-                wordex.occurences = frequency;
+                wordex.globaloccurences = frequency;
 
-                if(frequencyRank[0].wordvalue.equals(wordex.wordvalue) || frequencyRank[1].wordvalue.equals(wordex.wordvalue) || frequencyRank[2].wordvalue.equals(wordex.wordvalue) || frequencyRank[3].wordvalue.equals(wordex.wordvalue) || frequencyRank[4].wordvalue.equals(wordex.wordvalue)){
-                    System.out.println("takie same");
-                }
-                else {
-                    if ((wordex.occurences > frequencyRank[0].occurences)) {
+                if(!(frequencyRank[0].wordvalue.equals(wordex.wordvalue) || frequencyRank[1].wordvalue.equals(wordex.wordvalue) || frequencyRank[2].wordvalue.equals(wordex.wordvalue) || frequencyRank[3].wordvalue.equals(wordex.wordvalue) || frequencyRank[4].wordvalue.equals(wordex.wordvalue))){
+
+                    if ((wordex.globaloccurences > frequencyRank[0].globaloccurences)) {
                         frequencyRank[0] = wordex;
                     }
                     for (int i = 0; i < 4; i++) {
-                        if (frequencyRank[i].occurences > frequencyRank[i + 1].occurences) {
+                        if (frequencyRank[i].globaloccurences > frequencyRank[i + 1].globaloccurences) {
                             Word temp;
                             temp = frequencyRank[i + 1];
                             frequencyRank[i + 1] = frequencyRank[i];
@@ -73,11 +71,11 @@ public class DictionaryClass extends Thread {
                 }
             }
 
-            System.out.println("rankng 5 " + frequencyRank[0].wordvalue + " " + frequencyRank[0].occurences);
-            System.out.println("rankng 4 " + frequencyRank[1].wordvalue + " " + frequencyRank[1].occurences);
-            System.out.println("rankng 3 " + frequencyRank[2].wordvalue + " " + frequencyRank[2].occurences);
-            System.out.println("rankng 2 " + frequencyRank[3].wordvalue + " " + frequencyRank[3].occurences);
-            System.out.println("rankng 1 " + frequencyRank[4].wordvalue + " " + frequencyRank[4].occurences);
+            System.out.println("rankng 5 " + frequencyRank[0].wordvalue + " " + frequencyRank[0].globaloccurences);
+            System.out.println("rankng 4 " + frequencyRank[1].wordvalue + " " + frequencyRank[1].globaloccurences);
+            System.out.println("rankng 3 " + frequencyRank[2].wordvalue + " " + frequencyRank[2].globaloccurences);
+            System.out.println("rankng 2 " + frequencyRank[3].wordvalue + " " + frequencyRank[3].globaloccurences);
+            System.out.println("rankng 1 " + frequencyRank[4].wordvalue + " " + frequencyRank[4].globaloccurences);
 
             System.out.println("Plikow w slowniku: " + hashsetFiles.size());
             hashsetFiles.clear();
