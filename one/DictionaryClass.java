@@ -14,7 +14,7 @@ public class DictionaryClass extends Thread {
         while (true) {
 
 
-            for(Word everyword : myDictionary) System.out.println(everyword.sourceFile + " : " + everyword.wordvalue);
+            //for(Word everyword : myDictionary) System.out.println(everyword.sourceFile + " : " + everyword.wordvalue);
 
             System.out.println("Slow w slowniku: " + myDictionary.size());
 
@@ -25,8 +25,8 @@ public class DictionaryClass extends Thread {
 
             for(int i=0; i< 5; i++){
                 frequencyRank[i] = new Word();
-                frequencyRank[i].wordvalue = "t";
-                frequencyRank[i].sourceFile = "t";
+                frequencyRank[i].wordvalue = "";
+                frequencyRank[i].sourceFile = "";
                 frequencyRank[i].globaloccurences = 0;
             }
 
@@ -71,11 +71,11 @@ public class DictionaryClass extends Thread {
                 }
             }
 
-            System.out.println("rankng 5 " + frequencyRank[0].wordvalue + " " + frequencyRank[0].globaloccurences);
-            System.out.println("rankng 4 " + frequencyRank[1].wordvalue + " " + frequencyRank[1].globaloccurences);
-            System.out.println("rankng 3 " + frequencyRank[2].wordvalue + " " + frequencyRank[2].globaloccurences);
-            System.out.println("rankng 2 " + frequencyRank[3].wordvalue + " " + frequencyRank[3].globaloccurences);
-            System.out.println("rankng 1 " + frequencyRank[4].wordvalue + " " + frequencyRank[4].globaloccurences);
+            System.out.println("ranking 5 " + frequencyRank[0].wordvalue + " " + frequencyRank[0].globaloccurences);
+            System.out.println("ranking 4 " + frequencyRank[1].wordvalue + " " + frequencyRank[1].globaloccurences);
+            System.out.println("ranking 3 " + frequencyRank[2].wordvalue + " " + frequencyRank[2].globaloccurences);
+            System.out.println("ranking 2 " + frequencyRank[3].wordvalue + " " + frequencyRank[3].globaloccurences);
+            System.out.println("ranking 1 " + frequencyRank[4].wordvalue + " " + frequencyRank[4].globaloccurences);
 
             System.out.println("Plikow w slowniku: " + hashsetFiles.size());
             hashsetFiles.clear();
