@@ -2,7 +2,6 @@ package one;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -36,7 +35,6 @@ public class Main {
             for (String singleFile : newFileList){
 
                 filesExecutor.submit(() -> {
-
                     for( Word allwords : dictionary.myDictionary){
                         if(allwords.sourceFile.equals(singleFile)){
                             dictionary.myDictionary.remove(allwords);
@@ -49,31 +47,44 @@ public class Main {
                     List<String> knownWordsArray = new ArrayList<>();
                     List<String> maxKnownWordsArray = new ArrayList<>();
                     int knownratio = 0, maxknownratio = 0;
+                    boolean known = false;
 
                     for (String fileword : fileDictionary){
                         Word convertedfileword = Wordgenerator(singleFile, fileword);
-                        dictionary.myDictionary.add(convertedfileword);
                         thisFileDictionary.add(convertedfileword);
                     }
-                        int longestword = 0;
+
+
+                    int longestword = 0;
                     for ( Word eachword : thisFileDictionary){
+
                         if (eachword.wordletters > longestword){
                             longestword = eachword.wordletters;
                         }
+                        known = false;
                         for( Word knowndictionary : dictionary.myDictionary){
-                            if (eachword.wordvalue.equals(knowndictionary.wordvalue)) {
-                                knownWordsArray.add(eachword.wordvalue);
-                                knownratio++;
-                            }
-                            else{
-                                if(knownWordsArray.size() > maxknownratio){
-                                    maxKnownWordsArray = knownWordsArray;
-                                }
-                                knownWordsArray = null;
-                            }
-                            System.out.println("znane: " + maxKnownWordsArray);
-                        }
 
+                            if (eachword.wordvalue.equals(knowndictionary.wordvalue)) {
+                                known = true;
+                            }
+                        }
+                        if(known == true){
+                            knownWordsArray.add(eachword.wordvalue);
+                        }
+                        else if(known == false){
+                            if(knownWordsArray.size() > maxknownratio){
+                                maxknownratio = knownWordsArray.size();
+                                maxKnownWordsArray.clear();
+                                maxKnownWordsArray.addAll(knownWordsArray);
+                            }
+                            knownWordsArray.clear();
+                        }
+                    }
+
+                    System.out.println("znane: " + maxKnownWordsArray);
+
+                    for (Word addword : thisFileDictionary){
+                        dictionary.myDictionary.add(addword);
                     }
 
                     int[][] wordlengtharray = new int[2][longestword];
@@ -81,8 +92,6 @@ public class Main {
                     for(int i = 0 ; i < longestword; i++ ){
                         wordlengtharray[0][i] = i+1;
                     }
-
-
 
                     Word[] fileFrequencyRank = new Word[5];
 
@@ -97,7 +106,6 @@ public class Main {
                     for ( Word word : thisFileDictionary){
                         //System.out.println("ogarniamy slowo " + word.wordvalue + " z " + word.sourceFile);
                         wordlengtharray[1][word.wordletters-1] = wordlengtharray[1][word.wordletters-1]+1;
-
                         int frequency = 0;
                         for (Word worda : thisFileDictionary){
                             //System.out.println("ze slowo " + worda.wordvalue + " z " + worda.sourceFile);
@@ -112,6 +120,7 @@ public class Main {
                                 fileFrequencyRank[0] = word;
                             }
                             for (int i = 0; i < 4; i++) {
+
                                 if (fileFrequencyRank[i].fileoccurences > fileFrequencyRank[i + 1].fileoccurences) {
                                     Word temp;
                                     temp = fileFrequencyRank[i + 1];
@@ -149,24 +158,29 @@ public class Main {
 
 
         for (File fileEntry : folder.listFiles()) {
-            if ((System.currentTimeMillis() - (fileEntry.lastModified())) <= 4000){
-                if (fileEntry.getName().endsWith(".txt")) {
-                    newFileList.add(fileEntry.getName());
-                }
-            }
-            else if (fileEntry.isDirectory()) {
+
+            if (fileEntry.isDirectory()) {
                 String subfolder = mypathname + "\\" + fileEntry.getName();
                 File foldera = new File(subfolder);
                 for (File fileEntrya : foldera.listFiles()) {
-                    if ((System.currentTimeMillis() - (fileEntry.lastModified())) <= 4000){
+
+                    if ((System.currentTimeMillis() - (fileEntry.lastModified())) <= 4000) {
                         if (fileEntrya.getName().endsWith(".txt")) {
-                        newFileList.add(fileEntry.getName() + "\\" +fileEntrya.getName());
+                            System.out.println("plik");
+                            newFileList.add(fileEntry.getName() + "\\" + fileEntrya.getName());
                         }
                     }
                 }
             }
-        }
 
+            if ((System.currentTimeMillis() - (fileEntry.lastModified())) <= 4000) {
+                if (fileEntry.getName().endsWith(".txt")) {
+                    newFileList.add(fileEntry.getName());
+                }
+            }
+
+
+        }
         return newFileList;
     }
 
