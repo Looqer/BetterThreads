@@ -14,7 +14,7 @@ public class Main {
     static String mypathname = "D:\\Projects\\workspace_java\\Threads\\textfiles";
 
 
-    synchronized public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws InterruptedException {
 
         File folder = new File(mypathname);
         List<String> newFileList;
@@ -22,38 +22,36 @@ public class Main {
         DictionaryClass dictionary = new DictionaryClass();
         dictionary.start();
 
+        ExecutorService filesExecutor = Executors.newFixedThreadPool(1);
+
 
         while (true) {
             //dictionary.myDictionary.clear();
             System.out.println("szukanie");
-            newFileList = newFiles(folder);
+            newFileList = newFiles(folder, mypathname);
 
             System.out.println(newFileList);
 
-            ExecutorService filesExecutor = Executors.newFixedThreadPool(1);
-
             for (String singleFile : newFileList){
-
                 filesExecutor.submit(() -> {
                     for( Word allwords : dictionary.myDictionary){
                         if(allwords.sourceFile.equals(singleFile)){
                             dictionary.myDictionary.remove(allwords);
                         }
                     }
-                    System.out.println(Thread.currentThread().getName());
+                    System.out.println("start watku: ----------------- " + Thread.currentThread().getName());
 
                     List<String> fileDictionary = fileReader(singleFile);
                     List<Word> thisFileDictionary = new ArrayList<>();
                     List<String> knownWordsArray = new ArrayList<>();
                     List<String> maxKnownWordsArray = new ArrayList<>();
-                    int knownratio = 0, maxknownratio = 0;
-                    boolean known = false;
+                    int  maxknownratio = 0;
+                    boolean known;
 
                     for (String fileword : fileDictionary){
                         Word convertedfileword = Wordgenerator(singleFile, fileword);
                         thisFileDictionary.add(convertedfileword);
                     }
-
 
                     int longestword = 0;
                     for ( Word eachword : thisFileDictionary){
@@ -143,6 +141,7 @@ public class Main {
                     System.out.println(Arrays.toString(wordlengtharray[1]));
 
                     System.out.println(Thread.currentThread().getName());
+                    System.out.println("koniec watku: ----------------- " + Thread.currentThread().getName());
 
                 });
 
@@ -152,7 +151,7 @@ public class Main {
 
     }
 
-    private static List<String> newFiles(File folder) {
+    private static List<String> newFiles(File folder, String correctpath) {
         ArrayList<String> newFileList = new ArrayList<String>();
         //ArrayList<String> fileDictionary = new ArrayList<String>();
 
@@ -161,21 +160,14 @@ public class Main {
 
             if (fileEntry.isDirectory()) {
                 String subfolder = mypathname + "\\" + fileEntry.getName();
-                File foldera = new File(subfolder);
-                for (File fileEntrya : foldera.listFiles()) {
-
-                    if ((System.currentTimeMillis() - (fileEntry.lastModified())) <= 4000) {
-                        if (fileEntrya.getName().endsWith(".txt")) {
-                            System.out.println("plik");
-                            newFileList.add(fileEntry.getName() + "\\" + fileEntrya.getName());
-                        }
-                    }
-                }
+                File subfolderfile = new File(subfolder);
+                newFileList.addAll(newFiles(subfolderfile, subfolder));
             }
 
-            if ((System.currentTimeMillis() - (fileEntry.lastModified())) <= 4000) {
+            else if ((System.currentTimeMillis() - (fileEntry.lastModified())) <= 4000) {
                 if (fileEntry.getName().endsWith(".txt")) {
-                    newFileList.add(fileEntry.getName());
+                    System.out.println("d: " + fileEntry.getName());
+                    newFileList.add(correctpath + "\\" + fileEntry.getName());
                 }
             }
 
@@ -187,11 +179,9 @@ public class Main {
     private static List<String> fileReader(String fileEntry) {
         List<String> fileWordList = null;
 
-           String fullpath = (mypathname + "\\" + fileEntry);
-
             Scanner s = null;
             try {
-                s = new Scanner(new File(fullpath));
+                s = new Scanner(new File(fileEntry));
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }

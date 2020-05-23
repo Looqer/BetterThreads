@@ -4,7 +4,7 @@ import java.util.*;
 
 public class DictionaryClass extends Thread {
 
-    List<Word> myDictionary = new ArrayList<>();
+    List<Word> myDictionary = Collections.synchronizedList(new ArrayList<>());
     int duplicaterate, onlyinonefile, frequency;
 
     @Override
@@ -15,6 +15,7 @@ public class DictionaryClass extends Thread {
 
 
             //for(Word everyword : myDictionary) System.out.println(everyword.sourceFile + " : " + everyword.wordvalue);
+            System.out.println("start dicto: ----------------- " + Thread.currentThread().getName());
 
             System.out.println("Slow w slowniku: " + myDictionary.size());
 
@@ -81,6 +82,8 @@ public class DictionaryClass extends Thread {
             hashsetFiles.clear();
             System.out.println("Slow co sa tylko w jednym pliku: " + hashsetUnique.size());
             System.out.println("Slow co sa w wiecej niz jednym pliku: " + hashsetNUnique.size());
+
+            System.out.println("end dicto: ----------------- " + Thread.currentThread().getName());
 
             try {
                 Thread.sleep(5000);
