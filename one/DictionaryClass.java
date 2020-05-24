@@ -1,14 +1,32 @@
 package one;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
 import java.util.*;
 
 public class DictionaryClass extends Thread {
 
     List<Word> myDictionary = Collections.synchronizedList(new ArrayList<>());
-    int duplicaterate, onlyinonefile, frequency;
+    int duplicaterate, onlyinonefile, frequency, dictionarythreadsleeptime;
 
     @Override
     synchronized public void run() {
+
+        Reader readerprop = null;
+        try {
+            readerprop = new FileReader("src\\one\\config.properties");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        Properties Props = new Properties();
+        try {
+            Props.load(readerprop);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        dictionarythreadsleeptime = Integer.parseInt(Props.getProperty("dictionarythreadsleeptime"));
 
 
         while (true) {
@@ -86,7 +104,7 @@ public class DictionaryClass extends Thread {
             System.out.println("end dicto: ----------------- " + Thread.currentThread().getName());
 
             try {
-                Thread.sleep(3000);
+                Thread.sleep(dictionarythreadsleeptime);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

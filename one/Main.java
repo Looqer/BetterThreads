@@ -1,6 +1,5 @@
 package one;
 
-import javax.xml.xpath.XPath;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,19 +8,23 @@ import java.util.Scanner;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
 import java.io.IOException;
 
 
 public class Main {
 
 
-    static String mypathname = "D:\\Projects\\workspace_java\\Threads\\textfiles";
+    static String mypathname;// = "D:\\Projects\\workspace_java\\Threads\\textfiles";
+    static int mainthreadsleeptime;
 
 
     public static void main(String[] args) throws InterruptedException, IOException {
 
-
+        Reader readerprop = new FileReader("src\\one\\config.properties");
+        Properties Props = new Properties();
+        Props.load(readerprop);
+        mypathname = Props.getProperty("filespath");
+        mainthreadsleeptime = Integer.parseInt(Props.getProperty("mainthreadsleeptime"));
         File folder = new File(mypathname);
         List<String> newFileList;
 
@@ -152,7 +155,7 @@ public class Main {
                 });
 
             }
-            Thread.sleep(4000);
+            Thread.sleep(mainthreadsleeptime);
 
         }
 
@@ -171,7 +174,7 @@ public class Main {
                 newFileList.addAll(newFiles(subfolderfile, subfolder));
             }
 
-            else if ((System.currentTimeMillis() - (fileEntry.lastModified())) <= 4000) {
+            else if ((System.currentTimeMillis() - (fileEntry.lastModified())) <= mainthreadsleeptime) {
                 if (fileEntry.getName().endsWith(".txt")) {
                     if (fileEntry.getName().equals("koniec.txt")){
                         System.exit(0);
