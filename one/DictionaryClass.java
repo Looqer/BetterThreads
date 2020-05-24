@@ -13,7 +13,6 @@ public class DictionaryClass extends Thread {
 
     @Override
     synchronized public void run() {
-
         Reader readerprop = null;
         try {
             readerprop = new FileReader("src\\one\\config.properties");
@@ -28,13 +27,7 @@ public class DictionaryClass extends Thread {
         }
         dictionarythreadsleeptime = Integer.parseInt(Props.getProperty("dictionarythreadsleeptime"));
 
-
         while (true) {
-
-
-            //for(Word everyword : myDictionary) System.out.println(everyword.sourceFile + " : " + everyword.wordvalue);
-            System.out.println("start dicto: ----------------- " + Thread.currentThread().getName());
-
             System.out.println("Slow w slowniku: " + myDictionary.size());
 
             Set<String> hashsetFiles = new HashSet<String>();
@@ -55,9 +48,7 @@ public class DictionaryClass extends Thread {
             for(Word wordex : myDictionary){
                 duplicaterate = frequency = 0;
                 hashsetFiles.add(wordex.sourceFile);
-                //System.out.println("ogarniamy slowo " + wordex.wordvalue + " z " + wordex.sourceFile);
                 for (Word wordexa : myDictionary){
-                    //System.out.println("ze slowem " + wordexa.wordvalue + " z " + wordexa.sourceFile);
                     if(wordex.wordvalue.equals(wordexa.wordvalue)){
                         if(!wordex.sourceFile.equals(wordexa.sourceFile)){
                             duplicaterate++;
@@ -89,19 +80,13 @@ public class DictionaryClass extends Thread {
                     }
                 }
             }
-
-            System.out.println("ranking 5 " + frequencyRank[0].wordvalue + " " + frequencyRank[0].globaloccurences);
-            System.out.println("ranking 4 " + frequencyRank[1].wordvalue + " " + frequencyRank[1].globaloccurences);
-            System.out.println("ranking 3 " + frequencyRank[2].wordvalue + " " + frequencyRank[2].globaloccurences);
-            System.out.println("ranking 2 " + frequencyRank[3].wordvalue + " " + frequencyRank[3].globaloccurences);
-            System.out.println("ranking 1 " + frequencyRank[4].wordvalue + " " + frequencyRank[4].globaloccurences);
+            System.out.println("Top 5 najczestszych wyrazow w calym slowniku: ");
+            System.out.println("1." + frequencyRank[4].wordvalue + " 2." + frequencyRank[3].wordvalue + " 3." + frequencyRank[2].wordvalue+ " 4." + frequencyRank[1].wordvalue+ " 5." + frequencyRank[0].wordvalue);
 
             System.out.println("Plikow w slowniku: " + hashsetFiles.size());
             hashsetFiles.clear();
-            System.out.println("Slow co sa tylko w jednym pliku: " + hashsetUnique.size());
-            System.out.println("Slow co sa w wiecej niz jednym pliku: " + hashsetNUnique.size());
-
-            System.out.println("end dicto: ----------------- " + Thread.currentThread().getName());
+            System.out.println("Slow ktore sa tylko w jednym pliku: " + hashsetUnique.size());
+            System.out.println("Slow ktore sa w wiecej niz jednym pliku: " + hashsetNUnique.size());
 
             try {
                 Thread.sleep(dictionarythreadsleeptime);
