@@ -1,20 +1,26 @@
 package one;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import javax.xml.xpath.XPath;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import java.io.IOException;
+
+
 public class Main {
+
 
     static String mypathname = "D:\\Projects\\workspace_java\\Threads\\textfiles";
 
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws InterruptedException, IOException {
+
 
         File folder = new File(mypathname);
         List<String> newFileList;
@@ -22,7 +28,7 @@ public class Main {
         DictionaryClass dictionary = new DictionaryClass();
         dictionary.start();
 
-        ExecutorService filesExecutor = Executors.newFixedThreadPool(1);
+        ExecutorService filesExecutor = Executors.newFixedThreadPool(3);
 
 
         while (true) {
@@ -147,6 +153,7 @@ public class Main {
 
             }
             Thread.sleep(4000);
+
         }
 
     }
@@ -166,6 +173,9 @@ public class Main {
 
             else if ((System.currentTimeMillis() - (fileEntry.lastModified())) <= 4000) {
                 if (fileEntry.getName().endsWith(".txt")) {
+                    if (fileEntry.getName().equals("koniec.txt")){
+                        System.exit(0);
+                    }
                     System.out.println("d: " + fileEntry.getName());
                     newFileList.add(correctpath + "\\" + fileEntry.getName());
                 }
@@ -201,5 +211,22 @@ public class Main {
         thisword.sourceFile = file;
         thisword.wordletters = thisword.wordvalue.length();
         return thisword;
+    }
+
+    public static Properties readPropertiesFile(String fileName) throws IOException {
+        FileInputStream fis = null;
+        Properties prop = null;
+        try {
+            fis = new FileInputStream(fileName);
+            prop = new Properties();
+            prop.load(fis);
+        } catch(FileNotFoundException fnfe) {
+            fnfe.printStackTrace();
+        } catch(IOException ioe) {
+            ioe.printStackTrace();
+        } finally {
+            fis.close();
+        }
+        return prop;
     }
 }
